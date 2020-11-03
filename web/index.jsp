@@ -14,7 +14,7 @@
         </div>
 
         <div class="formulario">
-            <h2>Iniciar Sesion</h2>
+            <h2>Iniciar Sesión</h2>
             <form method="post" action="Validacion">
                 <input type="text" placeholder="Usuario" name="user_name" minlength="5" maxlength="10" required
                     title="Letras y números. Tamaño mínimo: 5. Tamaño máximo: 10">
