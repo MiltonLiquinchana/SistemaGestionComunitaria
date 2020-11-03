@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>Validacion</servlet-name>
+        <servlet-class>Controlador.Validacion</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Controles</servlet-name>
+        <servlet-class>Controlador.Controles</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Validacion</servlet-name>
+        <url-pattern>/Validacion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Controles</servlet-name>
+        <url-pattern>/Controles</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            1
+        </session-timeout>
+    </session-config>
+    <!--agregamos los parametros para la conexion-->
+    <context-param>
+        <param-name>URL</param-name>
+        <param-value>jdbc:mysql://localhost:3306/ProyectoSistemaAgua?serverTimezone=EST5EDT</param-value>
+    </context-param>
+    <context-param>
+        <param-name>USERNAME</param-name>
+        <param-value>root</param-value>
+    </context-param>
+    <context-param>
+        <param-name>PASSWORD</param-name>
+        <param-value>1754429361f</param-value>
+    </context-param>
+</web-app>
