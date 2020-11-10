@@ -80,8 +80,8 @@ function cambiocampo(event) {
 
 /*funcion para guardar los datos en la base de datos*/
 function guardardatos() {
-    if (ref_genera_input[1].value !== "" && ref_genera_input[2].value !== "" && ref_genera_input[3].value !== "" && ref_genera_input[4].value !== "" && ref_genera_input[5].value !== "" && ref_genera_input[6].value !== "" && ref_genera_input[7].value !== "" && ref_genera_input[8].value !== "" && ref_genera_input[9].value !== "") {
-        window.location.replace('Controles?menu=RConsumos&accion=guardar&nummedidor=' + referencia_listaMedidor.value + '&lecturaAnterior=' + referencia_lecturaAnterior.value + '&lecturaActual=' + referencia_lecturaActual.value + '&fechalectura=' + referencia_fechaRegistroActual.value + '&fechalimite=' + ref_genera_input[8].value + '&totalconsumo=' + referencia_conumomcubico.value + '&totalpagar=' + ref_genera_input[9].value);
+    if (ref_genera_input[1].value !== "" && ref_genera_input[2].value !== "" && ref_genera_input[3].value !== "" && ref_genera_input[4].value !== "" && ref_genera_input[5].value !== "" && ref_genera_input[6].value !== "" && ref_genera_input[7].value !== "" && ref_genera_input[8].value !== "" && ref_genera_input[9].value !== "" && ref_genera_input[10].value!=="") {
+        window.location.replace('Controles?menu=RConsumos&accion=guardar&nummedidor=' + referencia_listaMedidor.value + '&lecturaAnterior=' + referencia_lecturaAnterior.value + '&lecturaActual=' + referencia_lecturaActual.value + '&fechalectura=' + referencia_fechaRegistroActual.value + '&fechalimite=' + ref_genera_input[9].value + '&totalconsumo=' + referencia_conumomcubico.value + '&totalpagar=' + ref_genera_input[10].value+'&tipoconsumo='+ref_genera_input[7].value);
     } else {
         alert("hola si estan vacios");
     }

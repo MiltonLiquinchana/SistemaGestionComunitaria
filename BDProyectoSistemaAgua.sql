@@ -90,7 +90,9 @@ fecha_limite_pago date not null,/*Hasta que fecha tiene que pagar sin cargo extr
 consumo_mcubico int not null,
 total_pagar decimal(8,2) not null,
 fk_medidor int not null,
-foreign key(fk_medidor) references medidor(pk_medidor)
+fk_tipoconsumo int not null,
+foreign key(fk_medidor) references medidor(pk_medidor),
+foreign key(fk_tipoconsumo) references tipoconsumo(pk_tipoconsumo)
 );
 
 create table multas(
@@ -129,21 +131,15 @@ create table cobro_agua(
 pk_cobro_agua int primary key auto_increment not null,
 fk_consumo int not null,
 fecha_cacelacion date not null,/*Fecha en la que se esta cancelando al aguatero*/
-subtotal decimal(8,2) not null,
 dias_retraso char(10) not null,/*Se calcula al verificar la fecha cancelacion con fecha limite
 (si fecha de cancelacion es superior a tantos dias comenar a calcular los dias de retraso)*/
-fk_medidor int not null,
-fk_multas int,
+fk_multas int null,
 valor_multa decimal(8,2) not null,
-valor_descuento decimal(8,2) not null,/*es el descuento por si es una persona de tercera edad*/
 totalpagar decimal(8,2) not null,/*Se calcula al multiplicar valor multa por dias retraso + el consumo metros cubicos(revisar doc excel)*/
 fk_estado_pagos int not null,
-fk_tipoconsumo int not null,
 foreign key(fk_consumo) references consumo(pk_consumo),
-foreign key(fk_medidor) references medidor(pk_medidor),
 foreign key(fk_multas) references multas(pk_multas),
-foreign key(fk_estado_pagos) references estado_pagos(pk_estado_pagos),
-FOREIGN KEY(fk_tipoconsumo) REFERENCES tipoconsumo (pk_tipoconsumo)
+foreign key(fk_estado_pagos) references estado_pagos(pk_estado_pagos)
 );
 
 /*para registrar el tipo actividad*/

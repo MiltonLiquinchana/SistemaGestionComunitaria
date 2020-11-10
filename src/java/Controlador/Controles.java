@@ -254,9 +254,9 @@ public class Controles extends HttpServlet {
                     request.setAttribute("fechalimitepago", fechalimitecancelacion);
 
                     double totalpagar = 0.0;
+                    String tipo_consumo;
                     if (Integer.parseInt(valorconsumido) <= tipoConsumo.getLimitem_cubico() && tipoConsumo.getTarifa_basica() > 0) {
                         totalpagar = tipoConsumo.getTarifa_basica();
-
                     }
                     if (Integer.parseInt(valorconsumido) > tipoConsumo.getLimitem_cubico() && tipoConsumo.getTarifa_basica() > 1) {
                         totalpagar = Double.parseDouble(valorconsumido) * tipoConsumo.getValor();
@@ -267,7 +267,9 @@ public class Controles extends HttpServlet {
                     if (Integer.parseInt(valorconsumido) > tipoConsumo.getLimitem_cubico() && tipoConsumo.getTarifa_basica() < 1) {
                         totalpagar = Double.parseDouble(valorconsumido) * tipoConsumo.getValor();
                     }
+                    tipo_consumo = tipoConsumo.getTipo_consumo();
                     request.setAttribute("total", totalpagar);
+                    request.setAttribute("tipoconsumo", tipo_consumo);
 
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
@@ -276,8 +278,8 @@ public class Controles extends HttpServlet {
                 break;
                 case "guardar":
                     try {
-                    String nummedidor, lectura_anterior, lectura_actual, fecha_lectura, fecha_limite_pago;/*Hasta que fecha tiene que pagar sin cargo extra*/
-                    int consumo_mcubico, fk_medidor;
+                    String nummedidor, lectura_anterior, lectura_actual, fecha_lectura, fecha_limite_pago,tipoconsumor;/*Hasta que fecha tiene que pagar sin cargo extra*/
+                    int consumo_mcubico;
                     double total_pagar;
                     nummedidor = request.getParameter("nummedidor");
                     lectura_anterior = request.getParameter("lecturaAnterior");
@@ -286,9 +288,10 @@ public class Controles extends HttpServlet {
                     fecha_limite_pago = request.getParameter("fechalimite");
                     consumo_mcubico = Integer.parseInt(request.getParameter("totalconsumo"));
                     total_pagar = Double.parseDouble(request.getParameter("totalpagar"));
+                    tipoconsumor=request.getParameter("tipoconsumo");
                     daoConsumoImpl = new DAOConsumoImpl();
                     consum = new Consumo(1, lectura_anterior, lectura_actual, fecha_lectura, fecha_limite_pago, consumo_mcubico, total_pagar, 1);
-                    daoConsumoImpl.registrar(consum, nummedidor);
+                    daoConsumoImpl.registrar(consum, nummedidor,tipoconsumor);
 
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());

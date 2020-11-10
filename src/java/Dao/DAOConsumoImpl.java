@@ -51,7 +51,7 @@ public class DAOConsumoImpl {
         return consumo;
     }
 
-    public void registrar(Consumo consumo, String num_medidor) throws Exception {
+    public void registrar(Consumo consumo, String num_medidor,String tipoconsumo) throws Exception {
 
         try {
             conec = con.getConectionn();
@@ -60,7 +60,7 @@ public class DAOConsumoImpl {
             CallableStatement ps; //para usar esra se agrego la libreria
             //tambien agregamos libreria
             //aqui mandamos la consulta sql
-            ps = conec.prepareCall("{call guardarconsumo(?,?,?,?,?,?,?)}");
+            ps = conec.prepareCall("{call guardarconsumo(?,?,?,?,?,?,?,?)}");
             ps.setString(1, consumo.getLectura_anterior());
             ps.setString(2, consumo.getLectura_actual());
             ps.setString(3, consumo.getFecha_lectura());
@@ -68,6 +68,7 @@ public class DAOConsumoImpl {
             ps.setInt(5, consumo.getConsumo_mcubico());
             ps.setDouble(6, consumo.getTotal_pagar());
             ps.setString(7, num_medidor);
+            ps.setString(8, tipoconsumo);
             ps.execute();
             JOptionPane.showMessageDialog(null, "Se guardo exitosamente");
         } catch (Exception e) {

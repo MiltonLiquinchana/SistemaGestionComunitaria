@@ -151,5 +151,27 @@ select DATE_ADD(CURDATE(),INTERVAL LimiteDias DAY) as fechaLimite from LimiteDia
 where fk_comuna=(select fk_comuna from comunero where pk_comunero=fk_comune);
 
 /*procedimiento almacenado para guardar el consumo*/
-create procedure guardarconsumo(lectura_ante int, lectura_actual int, fecha_lectu varchar(15), fecha_limit varchar(15),consumo_mcubi int,total_pag double, nummedidor varchar(15))
-insert into consumo (lectura_anterior,lectura_actual,fecha_lectura,fecha_limite_pago,consumo_mcubico,total_pagar,fk_medidor) values(lectura_ante,lectura_actual,fecha_lectu,fecha_limit,consumo_mcubi,total_pag,(select pk_medidor from medidor where numero_medidor=nummedidor));
+Delimiter $$
+create procedure guardarconsumo(lectura_ante int, lectura_actual int, fecha_lectu varchar(15), fecha_limit varchar(15),consumo_mcubi int,total_pag double, nummedidor varchar(15),tipocon varchar(15))
+BEGIN
+insert into consumo (lectura_anterior,lectura_actual,fecha_lectura,fecha_limite_pago,consumo_mcubico,total_pagar,fk_medidor,fk_tipoconsumo) values(lectura_ante,lectura_actual,fecha_lectu,fecha_limit,consumo_mcubi,total_pag,(select pk_medidor from medidor where numero_medidor=nummedidor),
+(select pk_tipoconsumo from tipoconsumo where tipo_consumo=tipocon and fk_comuna=(select fk_comuna from comunero where pk_comunero=(select fk_comunero from medidor where numero_medidor=nummedidor))));
+insert into cobro_agua(
+fk_consumo,
+fecha_cacelacion,
+dias_retraso,
+fk_multas,
+valor_multa ,
+totalpagar ,
+fk_estado_pagos ) values(
+(select max(pk_consumo) as pk_consumo from consumo where fk_medidor=(select pk_medidor from medidor where numero_medidor=nummedidor)),
+fecha_limit,0,1,0,total_pag,2
+ );
+end $$
+DELIMITER $$;
+
+/*procedimiento almacenado para cobrar por el consumo de agua se ase una
+actualizacion de la fecha de cancelacion, dias de retraso, fk de fultas, valor de la multa, total pagar,*/
+
+create procedure cobraragua(fecha_cancel varchar(15),dias_retra char(10),fk_multa int, valor_mult decimal(8,2),total_pagar decimal(8,2),fk_estado_pago int)
+update cobro_agua set fecha_cancelacion=fecha_cancel, dias_retraso=dias_retra, fk_multas=fk_multa, valor_multa=valor_mult, totalpagar=total_pagar, fk_estado_pagos=fk_estado_pago

@@ -69,7 +69,11 @@
                             <input type="text" name="conumomcubico" id="conumomcubico" class="campo_form_registro_socios bloques"
                                    placeholder="Ingrese el total de los metros cubicos consumidos" disabled value="${valorconsumido}">
                         </div>
-
+                        <div class="cont_campos_form_registro">
+                            <label for="" class="label_campos_form_registro_socios">Tipo Consumo</label>
+                            <input type="text" name="" id="" class="campo_form_registro_socios bloques"
+                                   placeholder="Ingrese los nombres y apellidos" disabled value="${tipoconsumo}">
+                        </div>
 
                         <div class="cont_campos_form_registro">
                             <label for="" class="label_campos_form_registro_socios">FECHA DEL REGISTRO</label>
@@ -81,32 +85,32 @@
                             <input type="date" name="" id="" class="campo_form_registro_socios bloques" value="${fechalimitepago}">
                         </div>
 
-                        </div>
-                        <div class="cont_campos_form_registro">
-                            <label for="" class="label_campos_form_registro_socios">TOTAL A PAGAR:</label>
-                            <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="Ingrese el total a pagar" value="${total}">
-                        </div>
-
-
-
+                    </div>
+                    <div class="cont_campos_form_registro">
+                        <label for="" class="label_campos_form_registro_socios">TOTAL A PAGAR:</label>
+                        <input type="text" name="" id="" class="campo_form_registro_socios bloques"
+                               placeholder="Ingrese el total a pagar" value="${total}">
                     </div>
 
-                    <div class="botones">
-                        <!--Botones para enviar informacion del formualrio-->
-                        <button type="button" class="btn_form_cobro_actividades" id="guardar">GUARDAR</button>
-                        <button type="button" class="btn_form_cobro_actividades">CANCELAR</button>
-                        <button type="button" class="btn_form_cobro_actividades">NUEVO</button>
-                        <button type="button" class="btn_form_cobro_actividades">LIMPIAR</button>
-                    </div>
+
 
                 </div>
-            </form>
+
+                <div class="botones">
+                    <!--Botones para enviar informacion del formualrio-->
+                    <button type="button" class="btn_form_cobro_actividades" id="guardar">GUARDAR</button>
+                    <button type="button" class="btn_form_cobro_actividades">CANCELAR</button>
+                    <button type="button" class="btn_form_cobro_actividades">NUEVO</button>
+                    <button type="button" class="btn_form_cobro_actividades">LIMPIAR</button>
+                </div>
+
         </div>
-        <!--jquery-->
-        <script src="css/jquery.js"></script>
-        <!--mi archivo javascript-->
-        <script src="css/funcionesRegistroConsumo.js"></script>
-    </body>
+    </form>
+</div>
+<!--jquery-->
+<script src="css/jquery.js"></script>
+<!--mi archivo javascript-->
+<script src="css/funcionesRegistroConsumo.js"></script>
+</body>
 
 </html>
