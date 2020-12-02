@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.JOptionPane;
-
 public class Controles extends HttpServlet {
 
     DAOComuneroImpl daocomuneroimpl;
@@ -192,9 +191,9 @@ public class Controles extends HttpServlet {
                         dAOMedidorImpl = new DAOMedidorImpl();
                         //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
                         lista = dAOMedidorImpl.listar(dato);
-
                         //creamos un objeto 
                         request.setAttribute("lista", lista);
+
                         comune = new Comunero();
                         daocomuneroimpl = new DAOComuneroImpl();
                         comune = daocomuneroimpl.listarCCedula(dato);
@@ -278,7 +277,7 @@ public class Controles extends HttpServlet {
                 break;
                 case "guardar":
                     try {
-                    String nummedidor, lectura_anterior, lectura_actual, fecha_lectura, fecha_limite_pago,tipoconsumor;/*Hasta que fecha tiene que pagar sin cargo extra*/
+                    String nummedidor, lectura_anterior, lectura_actual, fecha_lectura, fecha_limite_pago, tipoconsumor;/*Hasta que fecha tiene que pagar sin cargo extra*/
                     int consumo_mcubico;
                     double total_pagar;
                     nummedidor = request.getParameter("nummedidor");
@@ -288,10 +287,10 @@ public class Controles extends HttpServlet {
                     fecha_limite_pago = request.getParameter("fechalimite");
                     consumo_mcubico = Integer.parseInt(request.getParameter("totalconsumo"));
                     total_pagar = Double.parseDouble(request.getParameter("totalpagar"));
-                    tipoconsumor=request.getParameter("tipoconsumo");
+                    tipoconsumor = request.getParameter("tipoconsumo");
                     daoConsumoImpl = new DAOConsumoImpl();
                     consum = new Consumo(1, lectura_anterior, lectura_actual, fecha_lectura, fecha_limite_pago, consumo_mcubico, total_pagar, 1);
-                    daoConsumoImpl.registrar(consum, nummedidor,tipoconsumor);
+                    daoConsumoImpl.registrar(consum, nummedidor, tipoconsumor);
 
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
@@ -306,7 +305,147 @@ public class Controles extends HttpServlet {
             request.getRequestDispatcher("registroParticipacion.jsp").forward(request, response);
         }
         if (menu.equals("PAgua")) {
-            request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
+            String accion = request.getParameter("accion");
+            String dato = request.getParameter("dato");
+            switch (accion) {
+                case "mostrar":
+                    request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
+                    break;
+                case "buscar":
+                    
+                    try {
+                    /*creamos una lista en la cual se va almacenar la lista devuelta por el metodo listar de la clase DAOMedidorImpl*/
+                    List lista = null;
+                    //creamos una nueva instancia de la clase daoMedidorImpl
+                    dAOMedidorImpl = new DAOMedidorImpl();
+                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
+                    lista = dAOMedidorImpl.listar(dato);
+                    //creamos un objeto de tipo request para poder enviar la lista al jsp
+                    request.setAttribute("lista", lista);
+
+                    comune = new Comunero();/*generamos una nueva instancia de la clase comunero para poder hacer uso de los metodos que esta clase contiene */
+                    daocomuneroimpl = new DAOComuneroImpl();/*hamos lo mismo con la clase DAOComuneroImpl*/
+                    comune = daocomuneroimpl.listarCCedula(dato);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
+                    request.setAttribute("comunero", comune);/*enviamos el objeto a el jsp*/
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
+                request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
+
+                break;
+                case "buscarconsumoimpaga":
+                   try {
+                    String pk_medidor = request.getParameter("pk_medidor");/*capturamos el dato que nos envia el jsp correspondiente al campo pk_medidor este con el proposito de enviar
+                    a la clase consomo para listar los consumos que aun no han sido cancelados, y tambien para devolver a el jsp para que se mantenga seleccionado la opcion correspondiente*/
+
+                    comune = new Comunero();/*generamos una nueva instancia de la clase comunero para poder hacer uso de los metodos que esta clase contiene */
+                    daocomuneroimpl = new DAOComuneroImpl();/*hamos lo mismo con la clase DAOComuneroImpl*/
+                    comune = daocomuneroimpl.listarCCedula(dato);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
+
+ /*creamos una lista en la cual se va almacenar la lista devuelta por el metodo listar de la clase DAOMedidorImpl*/
+                    List lista = null;
+                    //creamos una nueva instancia de la clase daoMedidorImpl
+                    dAOMedidorImpl = new DAOMedidorImpl();
+                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
+                    lista = dAOMedidorImpl.listar(dato);
+
+                    /*creamos una nueva instancia de la clase consumo*/
+                    consum = new Consumo();
+                    /*asignamos los valores necesarios para la consulta*/
+                    consum.setFk_medidor(Integer.parseInt(pk_medidor));
+                    /*creamos una nueva instancia de la clase DAOConsumoImpl y ejecutamos el metodo listarconsumoimpaga*/
+                    daoConsumoImpl = new DAOConsumoImpl();
+                    List listaconsumo = null;/*creamos una nueva lista para almacenar los registros de los consumos que aun no se cancelan*/
+                    listaconsumo = daoConsumoImpl.listarConsumoMedidorImpaga(consum);
+
+                    //JOptionPane.showMessageDialog(null, listaconsumo);
+                    request.setAttribute("listacosnumoimpaga", listaconsumo);/*enviamos la lista a el jsp*/
+                    request.setAttribute("lista", lista);/*enviamos denuvo la lista con los medidores obtenidos de la base datos*/
+                    request.setAttribute("valuepkmedidor", pk_medidor);/*reenviamos lo obtenido del jsp al jsp cabe recalcar que el envio lo hace el js correspondiente*/
+                    request.setAttribute("comunero", comune);/*enviamos el objeto a el jsp*/
+                    //JOptionPane.showMessageDialog(null, "el valor ingresado es " + valuemedidor);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
+                request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
+                break;
+                case "lisdatconsImpaga":
+                     try {
+                    String pk_medidor = request.getParameter("pk_medidor");/*capturamos el dato que nos envia el jsp correspondiente al campo pk_medidor este con el proposito de enviar
+                    a la clase consomo para listar los consumos que aun no han sido cancelados, y tambien para devolver a el jsp para que se mantenga seleccionado la opcion correspondiente*/
+
+                    comune = new Comunero();/*generamos una nueva instancia de la clase comunero para poder hacer uso de los metodos que esta clase contiene */
+                    daocomuneroimpl = new DAOComuneroImpl();/*hamos lo mismo con la clase DAOComuneroImpl*/
+                    comune = daocomuneroimpl.listarCCedula(dato);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
+
+ /*creamos una lista en la cual se va almacenar la lista devuelta por el metodo listar de la clase DAOMedidorImpl*/
+                    List lista = null;
+                    //creamos una nueva instancia de la clase daoMedidorImpl
+                    dAOMedidorImpl = new DAOMedidorImpl();
+                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
+                    lista = dAOMedidorImpl.listar(dato);
+
+                    /*creamos una nueva instancia de la clase consumo*/
+                    consum = new Consumo();
+                    /*asignamos los valores necesarios para la consulta*/
+                    consum.setFk_medidor(Integer.parseInt(pk_medidor));
+                    /*creamos una nueva instancia de la clase DAOConsumoImpl y ejecutamos el metodo listarconsumoimpaga*/
+                    daoConsumoImpl = new DAOConsumoImpl();
+                    List listaconsumo = null;/*creamos una nueva lista para almacenar los registros de los consumos que aun no se cancelan*/
+                    listaconsumo = daoConsumoImpl.listarConsumoMedidorImpaga(consum);
+
+                    //JOptionPane.showMessageDialog(null, listaconsumo);
+                    request.setAttribute("listacosnumoimpaga", listaconsumo);/*enviamos la lista a el jsp*/
+                    request.setAttribute("lista", lista);/*enviamos denuvo la lista con los medidores obtenidos de la base datos*/
+                    request.setAttribute("valuepkmedidor", pk_medidor);/*reenviamos lo obtenido del jsp al jsp cabe recalcar que el envio lo hace el js correspondiente*/
+                    request.setAttribute("comunero", comune);/*enviamos el objeto a el jsp*/
+                    //JOptionPane.showMessageDialog(null, "el valor ingresado es " + valuemedidor);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
+                request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
+                break;
+
+                case "buscarDatosConsumoImpaga":
+                    try {
+                    String pk_medidor = request.getParameter("pk_medidor");/*capturamos el dato que nos envia el jsp correspondiente al campo pk_medidor este con el proposito de enviar
+                    a la clase consomo para listar los consumos que aun no han sido cancelados, y tambien para devolver a el jsp para que se mantenga seleccionado la opcion correspondiente*/
+                    String pk_consumoimpaga=request.getParameter("pk_consumoimpaga");
+                    comune = new Comunero();/*generamos una nueva instancia de la clase comunero para poder hacer uso de los metodos que esta clase contiene */
+                    daocomuneroimpl = new DAOComuneroImpl();/*hamos lo mismo con la clase DAOComuneroImpl*/
+                    comune = daocomuneroimpl.listarCCedula(dato);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
+
+ /*creamos una lista en la cual se va almacenar la lista devuelta por el metodo listar de la clase DAOMedidorImpl*/
+                    List lista = null;
+                    //creamos una nueva instancia de la clase daoMedidorImpl
+                    dAOMedidorImpl = new DAOMedidorImpl();
+                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
+                    lista = dAOMedidorImpl.listar(dato);
+
+                    /*creamos una nueva instancia de la clase consumo*/
+                    consum = new Consumo();
+                    /*asignamos los valores necesarios para la consulta*/
+                    consum.setFk_medidor(Integer.parseInt(pk_medidor));
+                    /*creamos una nueva instancia de la clase DAOConsumoImpl y ejecutamos el metodo listarconsumoimpaga*/
+                    daoConsumoImpl = new DAOConsumoImpl();
+                    List listaconsumo = null;/*creamos una nueva lista para almacenar los registros de los consumos que aun no se cancelan*/
+                    listaconsumo = daoConsumoImpl.listarConsumoMedidorImpaga(consum);
+
+                    //JOptionPane.showMessageDialog(null, listaconsumo);
+                    request.setAttribute("listacosnumoimpaga", listaconsumo);/*enviamos la lista a el jsp*/
+                    request.setAttribute("lista", lista);/*enviamos denuvo la lista con los medidores obtenidos de la base datos*/
+                    request.setAttribute("valuepkmedidor", pk_medidor);/*reenviamos lo obtenido del jsp al jsp cabe recalcar que el envio lo hace el js correspondiente*/
+                    request.setAttribute("comunero", comune);/*enviamos el objeto a el jsp*/
+                    //JOptionPane.showMessageDialog(null, "el valor ingresado es " + valuemedidor);
+                    /*devolvemos el id del consumo al formulario*/
+                    request.setAttribute("pkconsumoimpaga", pk_consumoimpaga);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
+                request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
+                break;
+            }
+
         }
         if (menu.equals("PCuotas")) {
             request.getRequestDispatcher("cobroCuotas.jsp").forward(request, response);

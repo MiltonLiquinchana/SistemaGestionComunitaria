@@ -50,7 +50,7 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
                        aria-expanded="false" onclick="desplegartres()"> <img src="icon-menu/pagos.png" alt=""> Pagos</a>
                     <div class="sub-menu" id="subtres" style="display: none;">
-                        <a class="dropdown-item" href="Controles?menu=PAgua" target="contenidos"> Pago de Agua</a>
+                        <a class="dropdown-item" href="Controles?menu=PAgua&accion=mostrar" target="contenidos"> Pago de Agua</a>
                         <a class="dropdown-item" href="Controles?menu=PCuotas" target="contenidos"> Pago de Cuotas</a>
                         <a class="dropdown-item" href="Controles?menu=PMultas" target="contenidos"> Pago de Multas</a>
                     </div>

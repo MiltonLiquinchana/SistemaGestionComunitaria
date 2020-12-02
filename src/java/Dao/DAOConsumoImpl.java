@@ -9,6 +9,8 @@ import Modelo.Consumo;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -76,6 +78,39 @@ public class DAOConsumoImpl {
             JOptionPane.showMessageDialog(null, e);
         }
 
+    }
+    
+    /*metodo para listar los datos del consumo sin pagar por el numero de medidor*/
+    public List listarConsumoMedidorImpaga(Consumo consumo) throws Exception {
+        List<Consumo> lista = new ArrayList();
+        try {
+            conec = con.getConectionn();
+            //ya echa la conecion hacemos una consulta
+            //declaramos variables que necesitamos para hacer transacciones entre mysql
+            CallableStatement ps; //para usar esra se agrego la libreria
+            ResultSet res; //tambien agregamos libreria
+            //aqui mandamos la consulta sql
+            ps = conec.prepareCall("{call buscarConsumo_impaga(?)}");
+            ps.setInt(1, consumo.getFk_medidor());
+            res = ps.executeQuery();
+            //con esto ejecutamos la consulta
+            //con un if evaluamos si la consulta tiene resultados
+            //con if solo estamos dando por echo que la consulta va a devolver una sola linea
+            while (res.next()) { // si esto sale verdadero significa que esta consulta tiene resultados
+                //con sun joptionpanel imprimimos los resultados
+                //aqui definimos el tipo de dato que vamos a traer de la bd y dentro la etiqueta de la columna
+                consumo = new Consumo();
+                consumo.setPk_consumo(res.getInt("pk_consumo"));
+                consumo.setFecha_lectura(res.getString("datoconsum"));
+                lista.add(consumo);
+            }
+
+            res.close();
+        } catch (Exception e) {
+            //solo un mensaje en consola
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return lista;
     }
 
 }

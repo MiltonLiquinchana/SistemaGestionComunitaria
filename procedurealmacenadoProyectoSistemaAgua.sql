@@ -174,4 +174,44 @@ DELIMITER $$;
 actualizacion de la fecha de cancelacion, dias de retraso, fk de fultas, valor de la multa, total pagar,*/
 
 create procedure cobraragua(fecha_cancel varchar(15),dias_retra char(10),fk_multa int, valor_mult decimal(8,2),total_pagar decimal(8,2),fk_estado_pago int)
-update cobro_agua set fecha_cancelacion=fecha_cancel, dias_retraso=dias_retra, fk_multas=fk_multa, valor_multa=valor_mult, totalpagar=total_pagar, fk_estado_pagos=fk_estado_pago
+update cobro_agua set fecha_cancelacion=fecha_cancel, dias_retraso=dias_retra, fk_multas=fk_multa, valor_multa=valor_mult, totalpagar=total_pagar, fk_estado_pagos=fk_estado_pago;
+
+/********************************/
+/*procedimiento almacenado para buscar los consumos que aun no estan cancelados*/
+DELIMITER $$
+create procedure buscarConsumo_impaga(pk_medid int)
+begin
+SET lc_time_names = 'es_ES';
+select pk_consumo,concat(MONTHNAME(fecha_lectura)," ",year(fecha_lectura)) as datoconsum from consumo join cobro_agua
+on consumo.pk_consumo=cobro_agua.fk_consumo
+where fk_medidor=pk_medid and fk_estado_pagos=2;
+end$$
+DELIMITER $$;
+
+
+select pk_consumo,lectura_anterior,lectura_actual,fecha_lectura, fecha_limite_pago,consumo_mcubico,total_pagar,tipo_consumo, if(curdate()>fecha_limite_pago,(select tipo_multa from multas where tipo_multa="Retraso"
+and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)),"Sin Recargo") as tipomulta, if(TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())<=0,"0",TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())) as diasretraso, if(curdate()>fecha_limite_pago,(select valor from multas where tipo_multa="Retraso"
+and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)) *  if(TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())<=0,"0",TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())),"0.00") as valormulta  from consumo join cobro_agua
+on consumo.pk_consumo=cobro_agua.fk_consumo
+join tipoconsumo
+on consumo.fk_tipoconsumo=tipoconsumo.pk_tipoconsumo
+where pk_consumo=13;
+select * from consumo;
+select * from cobro_agua;
+select con.consumo_mcubico,tipcon.tipo_consumo,con.fecha_lectura,con.fecha_limite_pago,con.total_pagar as subtotal, if(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())<0,0,TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())) as dias_retraso, if(curdate()<=con.fecha_limite_pago,"Sin Recargo",(select tipmul.tipo_multa from multas as tipmul where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=1707616395))) as tipo_multa, round((TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate()) * if(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())<0,"0.00",(select valor from multas where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)))),2) as total_multa, tipcon.tarifa_ambiente,tipcon.alcantarillado,round((con.total_pagar+tipcon.tarifa_ambiente+tipcon.alcantarillado+(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate()) * if(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())<0,"0.00",(select valor from multas where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=1707616395))))),2) as total_pagar from consumo as con
+join tipoconsumo as tipcon
+on con.fk_tipoconsumo=tipcon.pk_tipoconsumo
+where con.pk_consumo=10
+
+/******************************************sirve para calcular los dias aviles de una fecha a otra
+Set @fechaTermino = '2020-11-10';
+Set @fechaInicio = '2020-05-05';
+SELECT
+ROUND(((unix_timestamp(@fechaTermino) - unix_timestamp(@fechaInicio) ) /(24*60*60)-7+WEEKDAY(@fechaInicio)-WEEKDAY(@fechaTermino))/7)
+ + if(WEEKDAY(@fechaInicio) <= 6, 1, 0)
+ + if(WEEKDAY(@fechaTermino) >= 6, 1, 0)
+as diasDomingos
+*************************************************************/
+select 4+5 as suma if(suma>5,"positivo","negativo")
+
+

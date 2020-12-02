@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,15 +19,9 @@
                 <!--div busqueda y seleccion opciones de busqueda-->
                 <div>
                     <label for="" class="label_busqueda"> <img src="./imagenes/magnifying-glass.png" alt="">BUSCAR POR:
-                        <input type="search" name="" id="" placeholder="CEDULA/NOMBRES/NUMERO MEDIDOR"
+                        <input type="search" name="" id="txtBusqueda" placeholder="CEDULA/NOMBRES Y APELLIDOS"
                                class="input_cednom_socio">
                         <button type="button" class="btn_form_cobro_actividades">BUSCAR</button></label>
-                    <label for="" class="label_inputcheck" id="inputuno_check_busqueda"><input type="radio" name="" id=""
-                                                                                               class="inputcheck_busqueda_socio">CEDULA</label>
-                    <label for="" class="label_inputcheck" id="inputdos_check_busqueda"><input type="radio" name="" id=""
-                                                                                               class="inputcheck_busqueda_socio">NOMBRES</label>
-                    <label for="" class="label_inputcheck" id="inputdos_check_busqueda"><input type="radio" name="" id=""
-                                                                                               class="inputcheck_busqueda_socio">NUMERO DE MEDIDOR</label>
                 </div>
 
                 <!--div datos cliente-->
@@ -40,32 +35,32 @@
                         <div class="cont_campos_form_registro">
                             <label for="" class="label_campos_form_registro_socios">CEDULA:</label>
                             <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="Ingrese el numero de cedula">
+                                   placeholder="Ingrese el numero de cedula" value="${comunero.getCedula()}">
                         </div>
                         <div class="cont_campos_form_registro">
                             <label for="" class="label_campos_form_registro_socios">NOMBRES Y APELLIDOS:</label>
                             <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="Ingrese los nombres y apellidos">
+                                   placeholder="Ingrese los nombres y apellidos" value="${comunero.getPrimer_nombre()} ${comunero.getSegundo_nombre()} ${comunero.getPrimer_apellido()} ${comunero.getSegundo_apellido()}">
                         </div>
 
                         <div class="cont_campos_form_registro">
-                            <input type="text" name="temporal" id="valorp" value="${valuemedi}" style="visibility: hidden">
+                            <input type="text" name="temporal" id="" value="${valuepkmedidor}">
                             <label for="" class="label_campos_form_registro_socios" >NUMERO DE MEDIDOR:</label>                           
                             <select name="listaMedidor" id="listaMedidor" class="campo_form_registro_socios lista">
                                 <option>Seleccione un medidor</option>  
                                 <c:forEach var="list" items="${lista}">
-                                    <option class="opcionlista" value="${list.getNumero_medidor()}">${list.getNumero_medidor()}</option>   
+                                    <option class="opcionlista" value="${list.getPk_medidor()}">${list.getNumero_medidor()}</option>   
                                 </c:forEach>             
                             </select>
                         </div>
 
                         <div class="cont_campos_form_registro">
-                            <input type="text" name="temporal" id="valorp" value="${valuemedi}" style="visibility: hidden">
+                            <input type="text" name="temporal" id="" value="${pkconsumoimpaga}">
                             <label for="" class="label_campos_form_registro_socios" >SELECCIONE EL CONSUMO:</label>                           
-                            <select name="listaMedidor" id="listaMedidor" class="campo_form_registro_socios lista">
-                                <option>Seleccione un consumo</option>  
-                                <c:forEach var="list" items="${lista}">
-                                    <option class="opcionlista" value="${list.getNumero_medidor()}">${list.getNumero_medidor()}</option>   
+                            <select name="listaConsumo" id="listaConsumo" class="campo_form_registro_socios lista">
+                                <option value="">Seleccione un consumo</option>  
+                                <c:forEach var="listc" items="${listacosnumoimpaga}">
+                                    <option class="opcionlista" value="${listc.getPk_consumo()}">${listc.getFecha_lectura()}</option>   
                                 </c:forEach>             
                             </select>
                         </div>
@@ -78,9 +73,9 @@
 
 
                         <div class="cont_campos_form_registro">
-                            <label for="" class="label_campos_form_registro_socios">Tipo Consumo</label>
+                            <label for="" class="label_campos_form_registro_socios">TIPO DE CONSUMO:</label>
                             <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="Ingrese tipo consumo" disabled value="${tipoconsumo}">
+                                   placeholder="Ingrese los nombres y apellidos" value="">
                         </div>
 
                         <div class="cont_campos_form_registro">
@@ -117,7 +112,7 @@
                         </div>
 
                         <div class="cont_campos_form_registro">
-                            <label for="" class="label_campos_form_registro_socios">VALOR MULTA:</label>
+                            <label for="" class="label_campos_form_registro_socios">TOTAL MULTA:</label>
                             <input type="text" name="" id="" class="campo_form_registro_socios bloques"
                                    placeholder="Ingrese el el nombre de la cuota">
                         </div>
@@ -150,16 +145,6 @@
                                    placeholder="El total de cambio a entregar">
                         </div>
                         <div class="cont_campos_form_registro">
-                            <label for="" class="label_campos_form_registro_socios">ANTICIPO</label>
-                            <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="Ingrese el valor del anticipo de ser el caso">
-                        </div>
-                        <div class="cont_campos_form_registro">
-                            <label for="" class="label_campos_form_registro_socios">CAMBIO NUEVO:</label>
-                            <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="Cambio a entregar con el valor del sin el deposito del anticipo">
-                        </div>
-                        <div class="cont_campos_form_registro">
                             <label for="" class="label_campos_form_registro_socios">SALDO PENDIENTE:</label>
                             <input type="text" name="" id="" class="campo_form_registro_socios bloques"
                                    placeholder="El saldo total del saldo pendiente">
@@ -178,6 +163,7 @@
                 </div>
             </form>
         </div>
+        <script src="js/cobroAgua.js"></script>
     </body>
 
 </html>
