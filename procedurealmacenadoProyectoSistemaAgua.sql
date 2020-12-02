@@ -150,7 +150,7 @@ create procedure consultaFechaLimitePago(fk_comune int)
 select DATE_ADD(CURDATE(),INTERVAL LimiteDias DAY) as fechaLimite from LimiteDias
 where fk_comuna=(select fk_comuna from comunero where pk_comunero=fk_comune);
 
-/*procedimiento almacenado para guardar el consumo*/
+/*procedimiento almacenado para guardar el consumo para ejecutar este procedimiento debe aber datos en las tablas relacionadas*/
 Delimiter $$
 create procedure guardarconsumo(lectura_ante int, lectura_actual int, fecha_lectu varchar(15), fecha_limit varchar(15),consumo_mcubi int,total_pag double, nummedidor varchar(15),tipocon varchar(15))
 BEGIN
