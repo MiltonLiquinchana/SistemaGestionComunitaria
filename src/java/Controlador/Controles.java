@@ -5,6 +5,7 @@
  */
 package Controlador;
 
+import Dao.DAOCobro_AguaImpl;
 import Dao.DAOComuneroImpl;
 import Dao.DAOComunidadImpl;
 import Dao.DAOConsumoImpl;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.JOptionPane;
+
 public class Controles extends HttpServlet {
 
     DAOComuneroImpl daocomuneroimpl;
@@ -35,6 +37,7 @@ public class Controles extends HttpServlet {
     DAOMedidorImpl dAOMedidorImpl;
     DAOConsumoImpl daoConsumoImpl;
     DAOTipoConsumoImpl daoTipoConsumoImpl;
+    DAOCobro_AguaImpl dAOCobro_AguaImpl;
     /*instanciamos las clases para setear los datos y desde los dao con el objeto obtener los datos requeridos*/
     Comunero comune;
     Login logi;
@@ -408,37 +411,8 @@ public class Controles extends HttpServlet {
 
                 case "buscarDatosConsumoImpaga":
                     try {
-                    String pk_medidor = request.getParameter("pk_medidor");/*capturamos el dato que nos envia el jsp correspondiente al campo pk_medidor este con el proposito de enviar
-                    a la clase consomo para listar los consumos que aun no han sido cancelados, y tambien para devolver a el jsp para que se mantenga seleccionado la opcion correspondiente*/
-                    String pk_consumoimpaga=request.getParameter("pk_consumoimpaga");
-                    comune = new Comunero();/*generamos una nueva instancia de la clase comunero para poder hacer uso de los metodos que esta clase contiene */
-                    daocomuneroimpl = new DAOComuneroImpl();/*hamos lo mismo con la clase DAOComuneroImpl*/
-                    comune = daocomuneroimpl.listarCCedula(dato);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
-
- /*creamos una lista en la cual se va almacenar la lista devuelta por el metodo listar de la clase DAOMedidorImpl*/
-                    List lista = null;
-                    //creamos una nueva instancia de la clase daoMedidorImpl
-                    dAOMedidorImpl = new DAOMedidorImpl();
-                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
-                    lista = dAOMedidorImpl.listar(dato);
-
-                    /*creamos una nueva instancia de la clase consumo*/
-                    consum = new Consumo();
-                    /*asignamos los valores necesarios para la consulta*/
-                    consum.setFk_medidor(Integer.parseInt(pk_medidor));
-                    /*creamos una nueva instancia de la clase DAOConsumoImpl y ejecutamos el metodo listarconsumoimpaga*/
-                    daoConsumoImpl = new DAOConsumoImpl();
-                    List listaconsumo = null;/*creamos una nueva lista para almacenar los registros de los consumos que aun no se cancelan*/
-                    listaconsumo = daoConsumoImpl.listarConsumoMedidorImpaga(consum);
-
-                    //JOptionPane.showMessageDialog(null, listaconsumo);
-                    request.setAttribute("listacosnumoimpaga", listaconsumo);/*enviamos la lista a el jsp*/
-                    request.setAttribute("lista", lista);/*enviamos denuvo la lista con los medidores obtenidos de la base datos*/
-                    request.setAttribute("valuepkmedidor", pk_medidor);/*reenviamos lo obtenido del jsp al jsp cabe recalcar que el envio lo hace el js correspondiente*/
-                    request.setAttribute("comunero", comune);/*enviamos el objeto a el jsp*/
-                    //JOptionPane.showMessageDialog(null, "el valor ingresado es " + valuemedidor);
-                    /*devolvemos el id del consumo al formulario*/
-                    request.setAttribute("pkconsumoimpaga", pk_consumoimpaga);
+                        dAOCobro_AguaImpl=new DAOCobro_AguaImpl();
+                        dAOCobro_AguaImpl.listarConsumoMedidorImpaga("1", 1);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
                 }

@@ -19,6 +19,7 @@ public class Consumo {
     private int consumo_mcubico;
     private double total_pagar;
     private int fk_medidor;
+    private TipoConsumo tipoconsumo;
 
     //constructores vacios y llenos
     public Consumo() {
@@ -99,5 +100,14 @@ public class Consumo {
     public void setFk_medidor(int fk_medidor) {
         this.fk_medidor = fk_medidor;
     }
+
+    public TipoConsumo getTipoconsumo() {
+        return tipoconsumo;
+    }
+
+    public void setTipoconsumo(TipoConsumo tipoconsumo) {
+        this.tipoconsumo = tipoconsumo;
+    }
+    
 
 }

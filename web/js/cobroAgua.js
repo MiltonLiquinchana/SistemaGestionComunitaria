@@ -29,5 +29,6 @@ function listarConsumos() {
     }
 }
 function listardatosConsumo() {
-    window.location.replace('Controles?menu=PAgua&accion=buscarDatosConsumoImpaga&dato=' + ref_genera_input[3].value + '&pk_medidor=' + ref_genera_select[0].value + "&pk_consumoimpaga=" + ref_genera_select[1].value);
+    //window.location.replace('Controles?menu=PAgua&accion=buscarDatosConsumoImpaga&dato=' + ref_genera_input[3].value + '&pk_medidor=' + ref_genera_select[0].value + "&pk_consumoimpaga=" + ref_genera_select[1].value);
+window.location.replace('Controles?menu=PAgua&accion=buscarDatosConsumoImpaga');
 }

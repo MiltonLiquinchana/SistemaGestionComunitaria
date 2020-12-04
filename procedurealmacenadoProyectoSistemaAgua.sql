@@ -182,14 +182,68 @@ DELIMITER $$
 create procedure buscarConsumo_impaga(pk_medid int)
 begin
 SET lc_time_names = 'es_ES';
-select pk_consumo,concat(MONTHNAME(fecha_lectura)," ",year(fecha_lectura)) as datoconsum from consumo join cobro_agua
+select pk_consumo,concat(MONTHNAME(fecha_lectura)," ",year(fecha_lectura)) as datoconsum 
+from consumo join cobro_agua
 on consumo.pk_consumo=cobro_agua.fk_consumo
 where fk_medidor=pk_medid and fk_estado_pagos=2;
 end$$
 DELIMITER $$;
 
+/*procedimiento almacenado para buscar los datos del consumo seleccionado*/
+DELIMITER $$
+create procedure buscar_datos_consumo_impaga(ced varchar(15), fkconsumo int)
+begin
+select c.consumo_mcubico, t.tipo_consumo, c.fecha_lectura,c.fecha_limite_pago,c.total_pagar as subtotal,
+if(curdate()>c.fecha_limite_pago,"Retraso","Sin Recargo") as tipo_multa,
+if(TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())<=0,"0",TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())) as diasretraso,
+if(curdate()>c.fecha_limite_pago,(select valor from multas 
+ where tipo_multa="Retraso"
+and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)),"0") as valor_multa,
+t.tarifa_ambiente,t.alcantarillado
+from consumo as c
+join tipoconsumo as t
+on t.pk_tipoconsumo = c.fk_tipoconsumo
+join cobro_agua as co
+on c.pk_consumo=co.fk_consumo
+join comuna
+on comuna.pk_comuna=t.fk_comuna
+where c.pk_consumo=8;
+end$$
+DELIMITER $$;
 
-select pk_consumo,lectura_anterior,lectura_actual,fecha_lectura, fecha_limite_pago,consumo_mcubico,total_pagar,tipo_consumo, if(curdate()>fecha_limite_pago,(select tipo_multa from multas where tipo_multa="Retraso"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*select pk_consumo,lectura_anterior,lectura_actual,fecha_lectura, fecha_limite_pago,consumo_mcubico,total_pagar,tipo_consumo, if(curdate()>fecha_limite_pago,(select tipo_multa from multas where tipo_multa="Retraso"
 and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)),"Sin Recargo") as tipomulta, if(TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())<=0,"0",TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())) as diasretraso, if(curdate()>fecha_limite_pago,(select valor from multas where tipo_multa="Retraso"
 and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)) *  if(TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())<=0,"0",TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())),"0.00") as valormulta  from consumo join cobro_agua
 on consumo.pk_consumo=cobro_agua.fk_consumo
@@ -201,7 +255,7 @@ select * from cobro_agua;
 select con.consumo_mcubico,tipcon.tipo_consumo,con.fecha_lectura,con.fecha_limite_pago,con.total_pagar as subtotal, if(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())<0,0,TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())) as dias_retraso, if(curdate()<=con.fecha_limite_pago,"Sin Recargo",(select tipmul.tipo_multa from multas as tipmul where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=1707616395))) as tipo_multa, round((TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate()) * if(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())<0,"0.00",(select valor from multas where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)))),2) as total_multa, tipcon.tarifa_ambiente,tipcon.alcantarillado,round((con.total_pagar+tipcon.tarifa_ambiente+tipcon.alcantarillado+(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate()) * if(TIMESTAMPDIFF(day, con.fecha_limite_pago, curdate())<0,"0.00",(select valor from multas where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=1707616395))))),2) as total_pagar from consumo as con
 join tipoconsumo as tipcon
 on con.fk_tipoconsumo=tipcon.pk_tipoconsumo
-where con.pk_consumo=10
+where con.pk_consumo=10*/
 
 /******************************************sirve para calcular los dias aviles de una fecha a otra
 Set @fechaTermino = '2020-11-10';
@@ -212,6 +266,5 @@ ROUND(((unix_timestamp(@fechaTermino) - unix_timestamp(@fechaInicio) ) /(24*60*6
  + if(WEEKDAY(@fechaTermino) >= 6, 1, 0)
 as diasDomingos
 *************************************************************/
-select 4+5 as suma if(suma>5,"positivo","negativo")
 
 
