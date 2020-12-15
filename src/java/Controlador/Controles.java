@@ -181,37 +181,41 @@ public class Controles extends HttpServlet {
         }
         if (menu.equals("RConsumos")) {
             String accion = request.getParameter("accion");
+            //obtenemos el numero de cedula del formulario  
+            String dato = request.getParameter("dato");
             switch (accion) {
                 case "mostrar":
                     request.getRequestDispatcher("registroConsumo.jsp").forward(request, response);
                     break;
                 case "buscar":
-                    //ceamos un objeto de tipo lista vacio     
-                    String dato = request.getParameter("dato");
+                    
                     try {
-                        List lista = null;
-                        //creamos una nueva instancia de la clase daoMedidorImpl
-                        dAOMedidorImpl = new DAOMedidorImpl();
-                        //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
-                        lista = dAOMedidorImpl.listar(dato);
-                        //creamos un objeto 
-                        request.setAttribute("lista", lista);
+                    List lista = null;
+                    //creamos una nueva instancia de la clase daoMedidorImpl
+                    dAOMedidorImpl = new DAOMedidorImpl();
+                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
+                    lista = dAOMedidorImpl.listar(dato);
+                    //creamos un objeto 
+                    request.setAttribute("lista", lista);
 
-                        comune = new Comunero();
-                        daocomuneroimpl = new DAOComuneroImpl();
-                        comune = daocomuneroimpl.listarCCedula(dato);
-                        request.setAttribute("comunero", comune);
+                    comune = new Comunero();
+                    daocomuneroimpl = new DAOComuneroImpl();
+                    comune = daocomuneroimpl.listarCCedula(dato);
+                    request.setAttribute("comunero", comune);
 
-                    } catch (Exception e) {
-                        JOptionPane.showMessageDialog(null, e.getMessage());
-                    }
-                    request.getRequestDispatcher("registroConsumo.jsp").forward(request, response);
-                    break;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
+                request.getRequestDispatcher("registroConsumo.jsp").forward(request, response);
+                break;
                 case "select_medidor":
                     try {
                     List lista = null;
-                    lista = dAOMedidorImpl.listar(comune.getCedula());
+                    lista = dAOMedidorImpl.listar(dato);
                     request.setAttribute("lista", lista);
+                    comune = new Comunero();
+                    daocomuneroimpl = new DAOComuneroImpl();
+                    comune = daocomuneroimpl.listarCCedula(dato);
                     request.setAttribute("comunero", comune);
                     consum = new Consumo();
                     daoConsumoImpl = new DAOConsumoImpl();
@@ -230,17 +234,38 @@ public class Controles extends HttpServlet {
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e);
                 }
+//                    JOptionPane.showMessageDialog(null, datoc);
                 request.getRequestDispatcher("registroConsumo.jsp").forward(request, response);
                 break;
 
                 case "buscarTipoConsumo":
                     try {
                     List lista = null;
-                    lista = dAOMedidorImpl.listar(comune.getCedula());
+                    //creamos una nueva instancia de la clase daoMedidorImpl
+                    dAOMedidorImpl = new DAOMedidorImpl();
+                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
+                    lista = dAOMedidorImpl.listar(dato);
+                    //creamos un objeto 
                     request.setAttribute("lista", lista);
+
+                    //volvemos a ejecutar esto por que cadaves que alguien aga una peticion el objeto cambia
+                    comune = new Comunero();
+                    daocomuneroimpl = new DAOComuneroImpl();
+                    comune = daocomuneroimpl.listarCCedula(dato);
                     request.setAttribute("comunero", comune);
-                    request.setAttribute("consumo", consum);
+
+                    //lo mismo sucede aqui
+                    consum = new Consumo();
+                    daoConsumoImpl = new DAOConsumoImpl();
                     String num_medidor = request.getParameter("num_medidor");
+                    consum = daoConsumoImpl.listarConsumoMedidor(num_medidor);
+
+                    if (consum.getLectura_anterior() == null) {
+                        consum.setLectura_anterior("0");
+                        request.setAttribute("consumo", consum);
+                    } else {
+                        request.setAttribute("consumo", consum);
+                    }
                     request.setAttribute("valuemedi", num_medidor);
 
                     String valorLecturaActual = request.getParameter("lecturaActual");
@@ -250,7 +275,7 @@ public class Controles extends HttpServlet {
                     request.setAttribute("valorconsumido", valorconsumido);
                     daoTipoConsumoImpl = new DAOTipoConsumoImpl();
                     tipoConsumo = new TipoConsumo();
-                    tipoConsumo = daoTipoConsumoImpl.listarTipoConsumo(comune.getCedula(), Integer.parseInt(valorconsumido));
+                    tipoConsumo = daoTipoConsumoImpl.listarTipoConsumo(dato, Integer.parseInt(valorconsumido));
                     daologinimpl = new DAOLoginImpl();
                     String fechalimitecancelacion = daologinimpl.FechaLimite(String.valueOf(comune.getPk_comunero()));
                     request.setAttribute("fechalimitepago", fechalimitecancelacion);
@@ -337,56 +362,22 @@ public class Controles extends HttpServlet {
 
                 break;
                 case "buscarconsumoimpaga":
+                    
                    try {
+                       String datos = request.getParameter("datos");
                     String pk_medidor = request.getParameter("pk_medidor");/*capturamos el dato que nos envia el jsp correspondiente al campo pk_medidor este con el proposito de enviar
                     a la clase consomo para listar los consumos que aun no han sido cancelados, y tambien para devolver a el jsp para que se mantenga seleccionado la opcion correspondiente*/
 
                     comune = new Comunero();/*generamos una nueva instancia de la clase comunero para poder hacer uso de los metodos que esta clase contiene */
                     daocomuneroimpl = new DAOComuneroImpl();/*hamos lo mismo con la clase DAOComuneroImpl*/
-                    comune = daocomuneroimpl.listarCCedula(dato);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
+                    comune = daocomuneroimpl.listarCCedula(datos);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
 
  /*creamos una lista en la cual se va almacenar la lista devuelta por el metodo listar de la clase DAOMedidorImpl*/
                     List lista = null;
                     //creamos una nueva instancia de la clase daoMedidorImpl
                     dAOMedidorImpl = new DAOMedidorImpl();
                     //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
-                    lista = dAOMedidorImpl.listar(dato);
-
-                    /*creamos una nueva instancia de la clase consumo*/
-                    consum = new Consumo();
-                    /*asignamos los valores necesarios para la consulta*/
-                    consum.setFk_medidor(Integer.parseInt(pk_medidor));
-                    /*creamos una nueva instancia de la clase DAOConsumoImpl y ejecutamos el metodo listarconsumoimpaga*/
-                    daoConsumoImpl = new DAOConsumoImpl();
-                    List listaconsumo = null;/*creamos una nueva lista para almacenar los registros de los consumos que aun no se cancelan*/
-                    listaconsumo = daoConsumoImpl.listarConsumoMedidorImpaga(consum);
-
-                    //JOptionPane.showMessageDialog(null, listaconsumo);
-                    request.setAttribute("listacosnumoimpaga", listaconsumo);/*enviamos la lista a el jsp*/
-                    request.setAttribute("lista", lista);/*enviamos denuvo la lista con los medidores obtenidos de la base datos*/
-                    request.setAttribute("valuepkmedidor", pk_medidor);/*reenviamos lo obtenido del jsp al jsp cabe recalcar que el envio lo hace el js correspondiente*/
-                    request.setAttribute("comunero", comune);/*enviamos el objeto a el jsp*/
-                    //JOptionPane.showMessageDialog(null, "el valor ingresado es " + valuemedidor);
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage());
-                }
-                request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
-                break;
-                case "lisdatconsImpaga":
-                     try {
-                    String pk_medidor = request.getParameter("pk_medidor");/*capturamos el dato que nos envia el jsp correspondiente al campo pk_medidor este con el proposito de enviar
-                    a la clase consomo para listar los consumos que aun no han sido cancelados, y tambien para devolver a el jsp para que se mantenga seleccionado la opcion correspondiente*/
-
-                    comune = new Comunero();/*generamos una nueva instancia de la clase comunero para poder hacer uso de los metodos que esta clase contiene */
-                    daocomuneroimpl = new DAOComuneroImpl();/*hamos lo mismo con la clase DAOComuneroImpl*/
-                    comune = daocomuneroimpl.listarCCedula(dato);/*enviamos la cedula para poder consultas el consumo y almacenamos lo devuelto en un objeto de tipo comunero*/
-
- /*creamos una lista en la cual se va almacenar la lista devuelta por el metodo listar de la clase DAOMedidorImpl*/
-                    List lista = null;
-                    //creamos una nueva instancia de la clase daoMedidorImpl
-                    dAOMedidorImpl = new DAOMedidorImpl();
-                    //enviamos el dato por el cual se va a realizar la consulta y almacenamos los devuelto en la lista
-                    lista = dAOMedidorImpl.listar(dato);
+                    lista = dAOMedidorImpl.listar(datos);
 
                     /*creamos una nueva instancia de la clase consumo*/
                     consum = new Consumo();
@@ -411,8 +402,8 @@ public class Controles extends HttpServlet {
 
                 case "buscarDatosConsumoImpaga":
                     try {
-                        dAOCobro_AguaImpl=new DAOCobro_AguaImpl();
-                        dAOCobro_AguaImpl.listarConsumoMedidorImpaga("1", 1);
+                    dAOCobro_AguaImpl = new DAOCobro_AguaImpl();
+                    dAOCobro_AguaImpl.listarConsumoMedidorImpaga("1", 1);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
                 }

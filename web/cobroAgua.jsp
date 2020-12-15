@@ -15,18 +15,13 @@
             <header>
                 <h1>Cobro de Consumos</h1>
             </header>
-            <form action="" method="post" class="form_cobro_actividades">
+            <form action="" method="" class="form_cobro_actividades">
                 <!--div busqueda y seleccion opciones de busqueda-->
                 <div>
                     <label for="" class="label_busqueda"> <img src="./imagenes/magnifying-glass.png" alt="">BUSCAR POR:
                         <input type="search" name="" id="txtBusqueda" placeholder="CEDULA/NOMBRES Y APELLIDOS"
-                               class="input_cednom_socio" list="listacomuneros">
+                               class="input_cednom_socio">
                         <button type="button" class="btn_form_cobro_actividades">BUSCAR</button></label>
-                    <datalist id="listacomuneros">
-                        <c:forEach var="list" items="${listaComuneros}">
-                            <option value="Perra">Perra Suci</option>
-                        </c:forEach>
-                    </datalist>
                 </div>
 
                 <!--div datos cliente-->
@@ -44,7 +39,7 @@
                         </div>
 
                         <div class="cont_campos_form_registro">
-                            <input type="text" name="temporal" id="" value="${valuepkmedidor}" style="visibility: hidden">
+                            <input type="text" name="temporal" id="" value="${valuepkmedidor}">
                             <label for="" class="label_campos_form_registro_socios" >NUMERO DE MEDIDOR:</label>                           
                             <select name="listaMedidor" id="listaMedidor" class="campo_form_registro_socios lista">
                                 <option>Seleccione un medidor</option>  
@@ -55,7 +50,7 @@
                         </div>
 
                         <div class="cont_campos_form_registro">
-                            <input type="text" name="temporal" id="" value="${pkconsumoimpaga}" style="visibility: hidden">
+                            <input type="text" name="temporal" id="" value="${pkconsumoimpaga}">
                             <label for="" class="label_campos_form_registro_socios" >SELECCIONE EL CONSUMO:</label>                           
                             <select name="listaConsumo" id="listaConsumo" class="campo_form_registro_socios lista">
                                 <option value="">Seleccione un consumo</option>  
@@ -145,7 +140,6 @@
                                    placeholder="El total de cambio a entregar">
                         </div>
                     </div>
-
 
                     <div class="botones">
                         <!--Botones para enviar informacion del formualrio-->

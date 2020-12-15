@@ -30,7 +30,7 @@
 
                         <div class="cont_campos_form_registro">
                             <label for="" class="label_campos_form_registro_socios">CEDULA:</label>
-                            <input type="text" name="" id="" class="campo_form_registro_socios bloques"
+                            <input type="text" name="campo_cedula" id="campo_cedula" class="campo_form_registro_socios bloques"
                                    placeholder="Ingrese el numero de cedula" disabled value="${comunero.getCedula()}">
                         </div>
                         <div class="cont_campos_form_registro">

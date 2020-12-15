@@ -1,12 +1,13 @@
 window.addEventListener("load", inicio);
 /*variables de referencia de objetos*/
 var referencia_btn_buscar_Consumidor, referencia_listaMedidor, referencia_lecturaActual, referencia_lecturaAnterior, referencia_valorp, referencia_dato, referencia_conumomcubico, referencia_temporald, referencia_fechaRegistroActual, ref_genera_input
-        , referencia_btn_guardar;
+        , referencia_btn_guardar,ref_cam_cedula;
 referencia_btn_buscar_Consumidor = document.getElementById("btn_buscar_Consumidor");
 referencia_listaMedidor = document.getElementById("listaMedidor");
 referencia_lecturaActual = document.getElementById("lecturaActual");
 referencia_valorp = document.getElementById("valorp");
 referencia_dato = document.getElementById("dato");
+ref_cam_cedula=document.getElementById("campo_cedula");
 referencia_lecturaAnterior = document.getElementById("lecturaAnterior");
 referencia_conumomcubico = document.getElementById("conumomcubico");
 referencia_temporald = document.getElementById("temporald");
@@ -33,16 +34,13 @@ function inicio() {
     var mes = fecha.getMonth() + 1;
     var dia = fecha.getDate();
     referencia_fechaRegistroActual.value = anio + "-" + mes + "-" + dia;
-}
-;
+};
 function buscar_Consumidor() {
     window.location.replace('Controles?menu=RConsumos&accion=buscar&dato=' + referencia_dato.value);
-}
-;
+};
 function buscar_consumo() {
-    window.location.replace('Controles?menu=RConsumos&accion=select_medidor&num_medidor=' + referencia_listaMedidor.value);
-}
-;
+    window.location.replace('Controles?menu=RConsumos&accion=select_medidor&dato='+ref_cam_cedula.value+'&num_medidor=' + referencia_listaMedidor.value);
+};
 
 function actulizarValores() {
     lecturaAnteriorValue = Number(referencia_lecturaAnterior.value);//tambien se puede convertir con parseInt()
@@ -65,7 +63,7 @@ function verificacionIngreso() {
         referencia_lecturaActual.focus();
     }
     if (lecturaActualValue > lecturaAnteriorValue) {
-        window.location.replace('Controles?menu=RConsumos&accion=buscarTipoConsumo&num_medidor=' + referencia_listaMedidor.value + '&lecturaActual=' + lecturaActualValue + '&valorConsumido=' + total);
+        window.location.replace('Controles?menu=RConsumos&accion=buscarTipoConsumo&dato='+ref_cam_cedula.value+'&num_medidor=' + referencia_listaMedidor.value + '&lecturaActual=' + lecturaActualValue + '&valorConsumido=' + total);
     }
 }
 ;
