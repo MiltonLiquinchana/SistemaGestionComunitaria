@@ -26,8 +26,8 @@ public class DAOCobro_AguaImpl {
             ResultSet res; //tambien agregamos libreria
             //aqui mandamos la consulta sql
             ps = conec.prepareCall("{call buscar_datos_consumo_impaga(?,?)}");
-            ps.setString(1, "1707616395");
-            ps.setInt(2, 8);
+            ps.setString(1, cedula);
+            ps.setInt(2, fkconsumo);
             res = ps.executeQuery();
             //con esto ejecutamos la consulta
             //con un if evaluamos si la consulta tiene resultados

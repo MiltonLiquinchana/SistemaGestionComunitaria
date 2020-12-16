@@ -198,7 +198,7 @@ if(curdate()>c.fecha_limite_pago,"Retraso","Sin Recargo") as tipo_multa,
 if(TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())<=0,"0",TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())) as diasretraso,
 if(curdate()>c.fecha_limite_pago,(select valor from multas 
  where tipo_multa="Retraso"
-and fk_comuna=(select fk_comuna from comunero where cedula=1707616395)),"0") as valor_multa,
+and fk_comuna=(select fk_comuna from comunero where cedula=ced)),"0") as valor_multa,
 t.tarifa_ambiente,t.alcantarillado
 from consumo as c
 join tipoconsumo as t
@@ -207,7 +207,7 @@ join cobro_agua as co
 on c.pk_consumo=co.fk_consumo
 join comuna
 on comuna.pk_comuna=t.fk_comuna
-where c.pk_consumo=8;
+where c.pk_consumo=fkconsumo;
 end$$
 DELIMITER $$;
 

@@ -18,17 +18,19 @@ function inicio() {
         ref_genera_select[1].value = ref_genera_input[4].value;
     }
 
-
-};
+}
+;
 function buscar() {
     window.location.replace('Controles?menu=PAgua&accion=buscar&dato=' + ref_genera_input[0].value);
-};
+}
+;
 function listarConsumos() {
     if (ref_genera_select[0].value > 0) {
         window.location.replace('Controles?menu=PAgua&accion=buscarconsumoimpaga&dato=' + ref_genera_input[1].value + '&pk_medidor=' + ref_genera_select[0].value);
     }
-};
+}
+;
 function listardatosConsumo() {
-    //window.location.replace('Controles?menu=PAgua&accion=buscarDatosConsumoImpaga&dato=' + ref_genera_input[3].value + '&pk_medidor=' + ref_genera_select[0].value + "&pk_consumoimpaga=" + ref_genera_select[1].value);
-
-};
+    window.location.replace('Controles?menu=PAgua&accion=buscarDatosConsumoImpaga&dato=' + ref_genera_input[1].value + '&pk_medidor=' + ref_genera_select[0].value + "&pk_consumoimpaga=" + ref_genera_select[1].value);
+}
+;
