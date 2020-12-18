@@ -122,7 +122,7 @@ CREATE TABLE `cobro_agua` (
   CONSTRAINT `cobro_agua_ibfk_1` FOREIGN KEY (`fk_consumo`) REFERENCES `consumo` (`pk_consumo`),
   CONSTRAINT `cobro_agua_ibfk_2` FOREIGN KEY (`fk_multas`) REFERENCES `multas` (`pk_multas`),
   CONSTRAINT `cobro_agua_ibfk_3` FOREIGN KEY (`fk_estado_pagos`) REFERENCES `estado_pagos` (`pk_estado_pagos`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,7 @@ CREATE TABLE `cobro_agua` (
 
 LOCK TABLES `cobro_agua` WRITE;
 /*!40000 ALTER TABLE `cobro_agua` DISABLE KEYS */;
-INSERT INTO `cobro_agua` VALUES (7,8,'2020-12-17','0',1,0.00,12.50,2);
+INSERT INTO `cobro_agua` VALUES (7,8,'2020-12-18','1',2,0.20,12.95,1),(8,9,'2020-12-18','1',2,0.20,35.45,1),(9,10,'2020-12-18','0',1,0.00,2.75,1);
 /*!40000 ALTER TABLE `cobro_agua` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,7 +300,7 @@ CREATE TABLE `consumo` (
   KEY `fk_tipoconsumo` (`fk_tipoconsumo`),
   CONSTRAINT `consumo_ibfk_1` FOREIGN KEY (`fk_medidor`) REFERENCES `medidor` (`pk_medidor`),
   CONSTRAINT `consumo_ibfk_2` FOREIGN KEY (`fk_tipoconsumo`) REFERENCES `tipoconsumo` (`pk_tipoconsumo`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -309,7 +309,7 @@ CREATE TABLE `consumo` (
 
 LOCK TABLES `consumo` WRITE;
 /*!40000 ALTER TABLE `consumo` DISABLE KEYS */;
-INSERT INTO `consumo` VALUES (8,0,50,'2020-12-02','2020-12-17',50,12.50,1,1);
+INSERT INTO `consumo` VALUES (8,0,50,'2020-12-02','2020-12-17',50,12.50,1,1),(9,50,190,'2020-12-15','2020-12-17',140,35.00,1,1),(10,190,200,'2020-12-15','2020-12-30',10,2.50,1,1);
 /*!40000 ALTER TABLE `consumo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -464,7 +464,7 @@ CREATE TABLE `multas` (
   PRIMARY KEY (`pk_multas`),
   KEY `fk_comuna` (`fk_comuna`),
   CONSTRAINT `multas_ibfk_1` FOREIGN KEY (`fk_comuna`) REFERENCES `comuna` (`pk_comuna`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -473,7 +473,7 @@ CREATE TABLE `multas` (
 
 LOCK TABLES `multas` WRITE;
 /*!40000 ALTER TABLE `multas` DISABLE KEYS */;
-INSERT INTO `multas` VALUES (1,'Sin Recargo',0.00,1);
+INSERT INTO `multas` VALUES (1,'Sin Recargo',0.00,1),(2,'Retraso',0.20,1);
 /*!40000 ALTER TABLE `multas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -562,6 +562,40 @@ CREATE TABLE `registros_participacion` (
 LOCK TABLES `registros_participacion` WRITE;
 /*!40000 ALTER TABLE `registros_participacion` DISABLE KEYS */;
 /*!40000 ALTER TABLE `registros_participacion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `reporte_agua`
+--
+
+DROP TABLE IF EXISTS `reporte_agua`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reporte_agua` (
+  `pk_reporte_agua` int NOT NULL AUTO_INCREMENT,
+  `fk_comunero` int NOT NULL,
+  `fk_medidor` int NOT NULL,
+  `fk_cobro_agua` int NOT NULL,
+  `fk_consumo` int NOT NULL,
+  PRIMARY KEY (`pk_reporte_agua`),
+  KEY `fk_comunero` (`fk_comunero`),
+  KEY `fk_medidor` (`fk_medidor`),
+  KEY `fk_cobro_agua` (`fk_cobro_agua`),
+  KEY `fk_consumo` (`fk_consumo`),
+  CONSTRAINT `reporte_agua_ibfk_1` FOREIGN KEY (`fk_comunero`) REFERENCES `comunero` (`pk_comunero`),
+  CONSTRAINT `reporte_agua_ibfk_2` FOREIGN KEY (`fk_medidor`) REFERENCES `medidor` (`pk_medidor`),
+  CONSTRAINT `reporte_agua_ibfk_3` FOREIGN KEY (`fk_cobro_agua`) REFERENCES `cobro_agua` (`pk_cobro_agua`),
+  CONSTRAINT `reporte_agua_ibfk_4` FOREIGN KEY (`fk_consumo`) REFERENCES `consumo` (`pk_consumo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reporte_agua`
+--
+
+LOCK TABLES `reporte_agua` WRITE;
+/*!40000 ALTER TABLE `reporte_agua` DISABLE KEYS */;
+/*!40000 ALTER TABLE `reporte_agua` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -857,6 +891,39 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `buscar_datos_consumo_impaga` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `buscar_datos_consumo_impaga`(ced varchar(15), fkconsumo int)
+begin
+select c.consumo_mcubico, t.tipo_consumo, c.fecha_lectura,c.fecha_limite_pago,c.total_pagar as subtotal,
+if(curdate()>c.fecha_limite_pago,"Retraso","Sin Recargo") as tipo_multa,
+if(TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())<=0,"0",TIMESTAMPDIFF(DAY, fecha_limite_pago, curdate())) as diasretraso,
+if(curdate()>c.fecha_limite_pago,(select valor from multas 
+ where tipo_multa="Retraso"
+and fk_comuna=(select fk_comuna from comunero where cedula=ced)),"0") as valor_multa,
+t.tarifa_ambiente,t.alcantarillado
+from consumo as c
+join tipoconsumo as t
+on t.pk_tipoconsumo = c.fk_tipoconsumo
+join cobro_agua as co
+on c.pk_consumo=co.fk_consumo
+join comuna
+on comuna.pk_comuna=t.fk_comuna
+where c.pk_consumo=fkconsumo;
+end ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `consultaFechaLimitePago` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1088,6 +1155,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `guardar_pago` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `guardar_pago`(dias_re int, fecha_limite_pag varchar(15),ced varchar(15),valor_mul double,total_pagado double, fk_consu int)
+update cobro_agua set fecha_cacelacion=curdate(),dias_retraso=dias_re,
+fk_multas=(select if(curdate()>fecha_limite_pag,(select pk_multas from multas where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=ced)),1)),
+valor_multa=valor_mul,
+totalpagar=total_pagado,
+fk_estado_pagos=1 where fk_consumo=fk_consu ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `guardar_tipousuario` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1245,4 +1333,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-02 18:23:35
+-- Dump completed on 2020-12-18 18:33:58
