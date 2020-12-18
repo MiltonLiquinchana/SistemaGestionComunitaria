@@ -15,7 +15,7 @@
             <header>
                 <h1>Cobro de Consumos</h1>
             </header>
-            <form action="" method="" class="form_cobro_actividades">
+            <form class="form_cobro_actividades">
                 <!--div busqueda y seleccion opciones de busqueda-->
                 <div>
                     <label for="" class="label_busqueda"> <img src="./imagenes/magnifying-glass.png" alt="">BUSCAR POR:
@@ -39,7 +39,7 @@
                         </div>
 
                         <div class="cont_campos_form_registro">
-                            <input type="text" name="temporal" id="" value="${valuepkmedidor}">
+                            <input type="text" name="temporal" id="" value="${valuepkmedidor}" style="visibility: hidden">
                             <label for="" class="label_campos_form_registro_socios" >NUMERO DE MEDIDOR:</label>                           
                             <select name="listaMedidor" id="listaMedidor" class="campo_form_registro_socios lista">
                                 <option>Seleccione un medidor</option>  
@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="cont_campos_form_registro">
-                            <input type="text" name="temporal" id="" value="${pkconsumoimpaga}">
+                            <input type="text" name="temporal" id="" value="${pkconsumoimpaga}" style="visibility: hidden">
                             <label for="" class="label_campos_form_registro_socios" >SELECCIONE EL CONSUMO:</label>                           
                             <select name="listaConsumo" id="listaConsumo" class="campo_form_registro_socios lista">
                                 <option value="">Seleccione un consumo</option>  
@@ -131,19 +131,19 @@
                         <div class="cont_campos_form_registro">
                             <label for="" class="label_campos_form_registro_socios">DEPOSITO EN EFECTIVO:</label>
                             <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="Ingrese el deposito en efectivo">
+                                   placeholder="Ingrese el deposito en efectivo" required>
                         </div>
 
                         <div class="cont_campos_form_registro">
                             <label for="" class="label_campos_form_registro_socios">CAMBIO:</label>
                             <input type="text" name="" id="" class="campo_form_registro_socios bloques"
-                                   placeholder="El total de cambio a entregar">
+                                   placeholder="El total de cambio a entregar" required>
                         </div>
                     </div>
 
                     <div class="botones">
                         <!--Botones para enviar informacion del formualrio-->
-                        <button class="btn_form_cobro_actividades">COBRAR</button>
+                        <button type="button" class="btn_form_cobro_actividades">COBRAR</button>
                         <button type="submit" class="btn_form_cobro_actividades">CANCELAR</button>
                         <button type="submit" class="btn_form_cobro_actividades">NUEVO</button>
                         <button type="submit" class="btn_form_cobro_actividades">LIMPIAR</button>

@@ -13,8 +13,10 @@ import Dao.DAOLoginImpl;
 import Dao.DAOMedidorImpl;
 import Dao.DAOTipoConsumoImpl;
 import Dao.DAOTipousuarioImpl;
+import Modelo.Cobro_Agua;
 import Modelo.Comunero;
 import Modelo.Consumo;
+import Modelo.Join;
 import Modelo.Login;
 import Modelo.Medidor;
 import Modelo.TipoConsumo;
@@ -44,6 +46,8 @@ public class Controles extends HttpServlet {
     Consumo consum;
     TipoConsumo tipoConsumo;
     Medidor medidor;
+    Cobro_Agua cobro_Agua;
+    Join join;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -401,7 +405,6 @@ public class Controles extends HttpServlet {
                 case "buscarDatosConsumoImpaga":
                     try {
                     String fk_consumoIm = request.getParameter("pk_consumoimpaga");
-
                     String pk_medidor = request.getParameter("pk_medidor");/*capturamos el dato que nos envia el jsp correspondiente al campo pk_medidor este con el proposito de enviar
                     a la clase consomo para listar los consumos que aun no han sido cancelados, y tambien para devolver a el jsp para que se mantenga seleccionado la opcion correspondiente*/
 
@@ -426,17 +429,42 @@ public class Controles extends HttpServlet {
                     listaconsumo = daoConsumoImpl.listarConsumoMedidorImpaga(consum);
 
                     dAOCobro_AguaImpl = new DAOCobro_AguaImpl();
-                    dAOCobro_AguaImpl.listarConsumoMedidorImpaga(dato, Integer.parseInt(fk_consumoIm));
+                    join = new Join();
+                    cobro_Agua = new Cobro_Agua();
+                    cobro_Agua = dAOCobro_AguaImpl.listarConsumoMedidorImpaga(dato, Integer.parseInt(fk_consumoIm));
+                    join.setTotalMulta(Double.parseDouble(cobro_Agua.getDias_retraso()) * cobro_Agua.getMultas().getValor());
+                    join.setTotalPagar(cobro_Agua.getConsumo().getTotal_pagar() + join.getTotalMulta() + cobro_Agua.getConsumo().getTipoconsumo().getTarifa_ambiente() + cobro_Agua.getConsumo().getTipoconsumo().getAlcantarillado());
+
                     request.setAttribute("listacosnumoimpaga", listaconsumo);/*enviamos la lista a el jsp*/
                     request.setAttribute("lista", lista);/*enviamos denuvo la lista con los medidores obtenidos de la base datos*/
                     request.setAttribute("valuepkmedidor", pk_medidor);/*reenviamos lo obtenido del jsp al jsp cabe recalcar que el envio lo hace el js correspondiente*/
                     request.setAttribute("comunero", comune);/*enviamos el objeto a el jsp*/
                     request.setAttribute("pkconsumoimpaga", fk_consumoIm);
+                    //mandamos el objeto obtenido al formulario
+                    request.setAttribute("dat_con_imp", cobro_Agua);
+                    request.setAttribute("calculos", join);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
                 }
                 request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
                 break;
+                case "guardarpago":
+                    int diasretraso = Integer.parseInt(request.getParameter("diasretraso"));
+                    String fecha_limite = request.getParameter("fecha_limite");
+                    String cedula = request.getParameter("cedula");
+                    Double valor_mul = Double.parseDouble(request.getParameter("valor_mul"));
+                    Double total_pag = Double.parseDouble(request.getParameter("total_pag"));
+                    int fk_consumo = Integer.parseInt(request.getParameter("fk_consumo"));
+                    try {
+                        dAOCobro_AguaImpl = new DAOCobro_AguaImpl();
+                        dAOCobro_AguaImpl.registrar(diasretraso, fecha_limite, cedula, valor_mul, total_pag, fk_consumo);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, e.getMessage());
+                    }
+
+                    request.getRequestDispatcher("cobroAgua.jsp").forward(request, response);
+                    break;
+
             }
 
         }

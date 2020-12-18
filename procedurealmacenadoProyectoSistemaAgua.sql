@@ -170,12 +170,6 @@ fecha_limit,0,1,0,total_pag,2
 end $$
 DELIMITER $$;
 
-/*procedimiento almacenado para cobrar por el consumo de agua se ase una
-actualizacion de la fecha de cancelacion, dias de retraso, fk de fultas, valor de la multa, total pagar,*/
-
-create procedure cobraragua(fecha_cancel varchar(15),dias_retra char(10),fk_multa int, valor_mult decimal(8,2),total_pagar decimal(8,2),fk_estado_pago int)
-update cobro_agua set fecha_cancelacion=fecha_cancel, dias_retraso=dias_retra, fk_multas=fk_multa, valor_multa=valor_mult, totalpagar=total_pagar, fk_estado_pagos=fk_estado_pago;
-
 /********************************/
 /*procedimiento almacenado para buscar los consumos que aun no estan cancelados*/
 DELIMITER $$
@@ -210,6 +204,19 @@ on comuna.pk_comuna=t.fk_comuna
 where c.pk_consumo=fkconsumo;
 end$$
 DELIMITER $$;
+
+/*procedimiento almacenado para cobrar por el consumo de agua se ase una
+actualizacion de la fecha de cancelacion, dias de retraso, fk de fultas, valor de la multa, total pagar,*/
+create procedure guardar_pago(dias_re int, fecha_limite_pag varchar(15),ced varchar(15),valor_mul double,total_pagado double, fk_consu int)
+update cobro_agua set fecha_cacelacion=curdate(),dias_retraso=dias_re,
+fk_multas=(select if(curdate()>fecha_limite_pag,(select pk_multas from multas where tipo_multa="Retraso" and fk_comuna=(select fk_comuna from comunero where cedula=ced)),1)),
+valor_multa=valor_mul,
+totalpagar=total_pagado,
+fk_estado_pagos=1 where fk_consumo=fk_consu
+
+
+
+
 
 
 

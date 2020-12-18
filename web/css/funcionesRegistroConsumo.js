@@ -33,6 +33,12 @@ function inicio() {
     var anio = fecha.getFullYear();
     var mes = fecha.getMonth() + 1;
     var dia = fecha.getDate();
+    if (dia < 10) {
+        dia = '0' + dia;
+    } //agrega cero si el menor de 10
+    if (mes < 10) {
+        mes = '0' + mes;
+    } //agrega cero si el menor de 10
     referencia_fechaRegistroActual.value = anio + "-" + mes + "-" + dia;
 }
 ;
